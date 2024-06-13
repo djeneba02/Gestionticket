@@ -25,13 +25,6 @@ public abstract class Utilisateur {
     @Column(length = 50, unique = true)
     private String email;
 
-   @Enumerated(EnumType.STRING)
-    @Column(length = 50)
+    @Enumerated(EnumType.STRING)
     private Role role;
-
-    public enum Role {
-        ADMIN,
-        FORMATEUR,
-        APPRENANT
-    }
 }
