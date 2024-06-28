@@ -2,26 +2,31 @@ package com.gestion.gestion.Service;
 
 import com.gestion.gestion.model.Admin;
 import com.gestion.gestion.model.Formateur;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public interface AdminService {
 
-    // Méthode pour créer un nouveau formateur par un admin
-    Formateur créerFormateur(Formateur formateur);
+    Formateur createFormateur(Formateur formateur);
 
-    // Méthode pour ajouter un formateur par un admin
-    void ajouterFormateur(Admin admin, Formateur formateur);
+    Formateur getFormateurById(Long id);
 
-    // Méthode pour supprimer un formateur par un admin en utilisant l'ID du formateur
-    void supprimerFormateur(Long formateurId);
+    Formateur updateFormateur(Long id, Formateur formateurDetails);
 
-    // Méthode pour mettre à jour un formateur par un admin
-    void modifierFormateur(Formateur formateur);
+    void deleteFormateur(Long id);
 
-    // Méthode pour récupérer tous les formateurs
-    List<Formateur> getAllFormateurs();
+    List<Formateur> getAllFormateur();
 
-    // Méthode pour récupérer un formateur par son ID
-    Formateur getFormateurById(Long formateurId);
+
+    Admin createAdmin(Admin admin);
+
+    Admin getAdminById(Long id);
+
+    Admin updateAdmin(Long id, Admin adminDetails);
+
+    void deleteAdmin(Long id);
+
+    List<Admin> getAllAdmin();
 }

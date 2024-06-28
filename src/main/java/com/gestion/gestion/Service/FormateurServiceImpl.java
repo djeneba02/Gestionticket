@@ -1,109 +1,66 @@
 package com.gestion.gestion.Service;
 
 
+import com.gestion.gestion.Repository.ApprenantRepository;
 import com.gestion.gestion.model.Apprenant;
 import com.gestion.gestion.model.Formateur;
 import com.gestion.gestion.Repository.FormateurRepository;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@Transactional
 @Data
 public class FormateurServiceImpl implements FormateurService {
 
     private final FormateurRepository formateurRepository;
+    private final ApprenantRepository apprenantRepository;
 
     @Autowired
-    public FormateurServiceImpl(FormateurRepository formateurRepository) {
-        this.formateurRepository = formateurRepository;
+    PasswordEncoder passwordEncoder;
+
+    @Override
+    public Apprenant createApprenant(Apprenant apprenant) {
+        apprenant.setPassword(passwordEncoder.encode(apprenant.getPassword()));
+        return apprenantRepository.save(apprenant);
+
     }
 
     @Override
-    public Formateur créerFormateur(Formateur formateur) {
-        return formateurRepository.save(formateur);
+    public Apprenant getApprenantById(Long apprenantId) {
+        return apprenantRepository.findById(apprenantId)
+                .orElseThrow(() -> new IllegalArgumentException("Apprenant non trouvé avec l'ID : " + apprenantId));
     }
 
     @Override
-    public List<Formateur> getAllFormateurs() {
-        return formateurRepository.findAll();
+    public Apprenant updateApprenant(Long id, Apprenant apprenant) {
+        return apprenantRepository.findById(id)
+                .map(a->{
+                    a.setNom(apprenant.getNom());
+                    a.setPrenom(apprenant.getPrenom());
+                    a.setEmail(apprenant.getEmail());
+                    a.setRole(apprenant.getRole());
+                    return apprenantRepository.save(a);
+                }).orElseThrow(() -> new RuntimeException("Apprenant non trouver !" ));
+
     }
 
     @Override
-    public Formateur getFormateurById(Long formateurId) {
-        Optional<Formateur> formateur = formateurRepository.findById(formateurId);
-        return formateur.orElse(null);
+    public void deleteApprenant(Long id) {
+        apprenantRepository.deleteById(id);
+
     }
 
-    @Override
-    public Formateur updateFormateur(Formateur formateur) {
-        return formateurRepository.save(formateur);
-    }
+
 
     @Override
-    public void supprimerFormateur(Long formateurId) {
-        formateurRepository.deleteById(formateurId);
-    }
-
-    @Override
-    public void ajouterApprenant(Long formateurId, Apprenant apprenant) {
-        Formateur formateur = getFormateurById(formateurId);
-        if (formateur != null) {
-            apprenant.setFormateur(formateur);
-            formateur.getApprenants().add(apprenant);
-            formateurRepository.save(formateur);
-        }
-    }
-
-    @Override
-    public void supprimerApprenant(Long formateurId, Long apprenantId) {
-        Formateur formateur = getFormateurById(formateurId);
-        if (formateur != null) {
-            formateur.getApprenants().removeIf(apprenant -> apprenant.getId().equals(apprenantId));
-            formateurRepository.save(formateur);
-        }
-    }
-
-    @Override
-    public List<Apprenant> getAllApprenants(Long formateurId) {
-        Formateur formateur = getFormateurById(formateurId);
-        if (formateur != null) {
-            return formateur.getApprenants();
-        }
-        return null;
-    }
-
-    @Override
-    public Apprenant getApprenantById(Long formateurId, Long apprenantId) {
-        List<Apprenant> apprenants = getAllApprenants(formateurId);
-        if (apprenants != null) {
-            for (Apprenant apprenant : apprenants) {
-                if (apprenant.getId().equals(apprenantId)) {
-                    return apprenant;
-                }
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public void modifierApprenant(Long formateurId, Apprenant apprenant) {
-        Formateur formateur = getFormateurById(formateurId);
-        if (formateur != null) {
-            for (Apprenant existingApprenant : formateur.getApprenants()) {
-                if (existingApprenant.getId().equals(apprenant.getId())) {
-                    existingApprenant.setNom(apprenant.getNom());
-                    existingApprenant.setPrenom(apprenant.getPrenom());
-                    existingApprenant.setEmail(apprenant.getEmail());
-                    // Enregistrer les modifications
-                    formateurRepository.save(formateur);
-                    break;
-                }
-            }
-
-        }
+    public List<Apprenant> getAllApprenants() {
+        return apprenantRepository.findAll();
     }
 }

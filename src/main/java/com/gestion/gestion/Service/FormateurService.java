@@ -4,28 +4,21 @@ package com.gestion.gestion.Service;
 
 import com.gestion.gestion.model.Apprenant;
 import com.gestion.gestion.model.Formateur;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public interface FormateurService {
 
-    Formateur créerFormateur(Formateur formateur);
 
-    List<Formateur> getAllFormateurs();
 
-    Formateur getFormateurById(Long formateurId);
+    Apprenant createApprenant(Apprenant apprenant);
 
-    Formateur updateFormateur(Formateur formateur);
+    Apprenant getApprenantById(Long id);
 
-    void supprimerFormateur(Long formateurId);
+    Apprenant updateApprenant(Long id, Apprenant apprenantDetails);
 
-    void ajouterApprenant(Long formateurId, Apprenant apprenant);
+    void deleteApprenant(Long id);
 
-    void supprimerApprenant(Long formateurId, Long apprenantId);
-
-    List<Apprenant> getAllApprenants(Long formateurId);
-
-    void modifierApprenant(Long formateurId, Apprenant apprenant);
-
-    Apprenant getApprenantById(Long formateurId, Long apprenantId);
+    List<Apprenant> getAllApprenants();
 }

@@ -1,15 +1,16 @@
 package com.gestion.gestion.model;
 
+import com.gestion.gestion.Enum.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
+@Entity
 @NoArgsConstructor
 @Getter
 @Setter
-@MappedSuperclass
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Utilisateur {
 
     @Id
@@ -25,6 +26,12 @@ public abstract class Utilisateur {
     @Column(length = 50, unique = true)
     private String email;
 
+    @Column(length = 100) // Longueur du champ à ajuster selon vos besoins
+    private String password;
+
     @Enumerated(EnumType.STRING)
     private Role role;
+
+
+
 }
