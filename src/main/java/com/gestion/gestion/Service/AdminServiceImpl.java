@@ -4,7 +4,9 @@ import com.gestion.gestion.model.Admin;
 import com.gestion.gestion.model.Formateur;
 import com.gestion.gestion.Repository.AdminRepository;
 import com.gestion.gestion.Repository.FormateurRepository;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,57 +15,90 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@Data
 public class AdminServiceImpl implements AdminService {
 
     private final AdminRepository adminRepository;
     private final FormateurRepository formateurRepository;
 
     @Autowired
-    public AdminServiceImpl(AdminRepository adminRepository, FormateurRepository formateurRepository) {
-        this.adminRepository = adminRepository;
-        this.formateurRepository = formateurRepository;
-    }
+    PasswordEncoder passwordEncoder;
 
     @Override
-    public Formateur créerFormateur(Formateur formateur) {
-        // Créer un nouveau formateur
+    public Formateur createFormateur(Formateur formateur) {
+        formateur.setPassword(passwordEncoder.encode(formateur.getPassword()));
         return formateurRepository.save(formateur);
+
     }
 
-    @Override
-    public void ajouterFormateur(Admin admin, Formateur formateur) {
-        // Ajout d'un formateur par l'admin
-        admin.getFormateurs().add(formateur);
-        adminRepository.save(admin);
-    }
-
-    @Override
-    public void supprimerFormateur(Long formateurId) {
-        Optional<Formateur> formateurOptional = formateurRepository.findById(formateurId);
-        formateurOptional.ifPresent(formateur -> {
-            Admin admin = new Admin();
-            admin.getFormateurs().remove(formateur);
-            formateurRepository.delete(formateur);
-            adminRepository.save(admin);
-        });
-    }
-
-    @Override
-    public void modifierFormateur(Formateur formateur) {
-        // Mise à jour d'un formateur par l'admin
-        formateurRepository.save(formateur);
-    }
-
-    @Override
-    public List<Formateur> getAllFormateurs() {
-        // Récupérer tous les formateurs
-        return formateurRepository.findAll();
-    }
 
     @Override
     public Formateur getFormateurById(Long formateurId) {
-        // Récupérer un formateur par son ID
-        Optional<Formateur> formateurOptional = formateurRepository.findById(formateurId);
-        return formateurOptional.orElse(null);
+        return formateurRepository.findById(formateurId)
+                .orElseThrow(() -> new IllegalArgumentException("Formateur non trouvé avec l'ID : " + formateurId));
     }
+
+    @Override
+    public Formateur updateFormateur(Long id, Formateur formateur) {
+        return formateurRepository.findById(id)
+                .map(f->{
+                    f.setNom(formateur.getNom());
+                    f.setPrenom(formateur.getPrenom());
+                    f.setEmail(formateur.getEmail());
+                    f.setRole(formateur.getRole());
+                    return formateurRepository.save(f);
+                }).orElseThrow(() -> new RuntimeException("Apprenant non trouver !" ));
+
+    }
+
+    @Override
+    public void deleteFormateur(Long id) {
+        formateurRepository.deleteById(id);
+
+    }
+
+    @Override
+    public List<Formateur> getAllFormateur() {
+        return formateurRepository.findAll();
+    }
+
+
+
+    @Override
+    public Admin createAdmin(Admin admin) {
+        admin.setPassword(passwordEncoder.encode(admin.getPassword()));
+
+        return adminRepository.save(admin);
+    }
+
+    @Override
+    public Admin getAdminById(Long id) {
+        return adminRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Formateur non trouvé avec l'ID : " + id));
+    }
+
+    @Override
+    public Admin updateAdmin(Long id, Admin admin) {
+        return adminRepository.findById(id)
+                .map(ad->{
+                    ad.setNom(admin.getNom());
+                    ad.setPrenom(admin.getPrenom());
+                    ad.setEmail(admin.getEmail());
+                    ad.setRole(admin.getRole());
+                    return adminRepository.save(ad);
+                }).orElseThrow(() -> new RuntimeException("Admin non trouver !" ));
+
+    }
+
+    @Override
+    public void deleteAdmin(Long id) {
+
+        adminRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Admin> getAllAdmin() {
+        return adminRepository.findAll();
+    }
+
 }
