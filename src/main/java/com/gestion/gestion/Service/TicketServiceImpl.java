@@ -1,5 +1,6 @@
 package com.gestion.gestion.Service;
 
+<<<<<<< HEAD
 import com.gestion.gestion.Enum.Statut;
 import com.gestion.gestion.Repository.TicketRepository;
 import com.gestion.gestion.Repository.TraitementRepository;
@@ -31,4 +32,11 @@ public class TicketServiceImpl implements TicketService
         return traitementRepository.save(traitement);
     }
 
+=======
+import org.springframework.stereotype.Service;
+
+@Service
+public class TicketServiceImpl implements TicketService
+{
+>>>>>>> 4d9f6a42d7ebcc4cc0950563327e09ed3aab5bb5
 }

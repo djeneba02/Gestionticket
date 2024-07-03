@@ -43,7 +43,10 @@ public class TraitementServiceImpl implements TraitementService {
         traitementRepository.save(traitement);
 
         Ticket ticket = traitement.getTicket();
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4d9f6a42d7ebcc4cc0950563327e09ed3aab5bb5
         Apprenant apprenant = ticket.getApprenant();
         String email = apprenant.getEmail();
         String Object ="huuuuuuuuuuuuuuuuuu";

@@ -1,15 +1,27 @@
 package com.gestion.gestion.Service;
 
 
+<<<<<<< HEAD
 import com.gestion.gestion.Enum.Statut;
 import com.gestion.gestion.Repository.*;
 import com.gestion.gestion.model.*;
 import lombok.Data;
 import org.springframework.expression.ExpressionException;
+=======
+import com.gestion.gestion.Repository.*;
+import com.gestion.gestion.model.*;
+import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+>>>>>>> 4d9f6a42d7ebcc4cc0950563327e09ed3aab5bb5
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+<<<<<<< HEAD
+=======
+import org.springframework.security.core.userdetails.UserDetails;
+>>>>>>> 4d9f6a42d7ebcc4cc0950563327e09ed3aab5bb5
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +51,10 @@ public class ApprenantServiceImpl implements ApprenantService {
         Apprenant apprenant = (Apprenant) utilisateurRepository.findByEmail(emailApp);
 
         ticket.setApprenant(apprenant);
+<<<<<<< HEAD
         //ticket.setStatut(Statut.OUVERT);
+=======
+>>>>>>> 4d9f6a42d7ebcc4cc0950563327e09ed3aab5bb5
         Ticket enrTicket = ticketRepository.save(ticket);
 
         Formateur formateur = apprenant.getFormateur();
@@ -75,7 +90,11 @@ public class ApprenantServiceImpl implements ApprenantService {
             // Met à jour les informations du ticket existant avec celles du ticket fourni
             existingTicket.setTitre(ticket.getTitre());
             existingTicket.setDescription(ticket.getDescription());
+<<<<<<< HEAD
            // existingTicket.setStatut(ticket.getStatut());
+=======
+            existingTicket.setStatut(ticket.getStatut());
+>>>>>>> 4d9f6a42d7ebcc4cc0950563327e09ed3aab5bb5
             existingTicket.setCategorie(ticket.getCategorie());
             // Sauvegarde le ticket mis à jour dans le dépôt
             return ticketRepository.save(existingTicket);
@@ -84,6 +103,7 @@ public class ApprenantServiceImpl implements ApprenantService {
             throw new RuntimeException("Ticket non trouvé !");
         }
         }
+<<<<<<< HEAD
 @Override
     public Ticket updateStatut(Long ticketId, Statut statut) {
         Ticket ticket = ticketRepository.findById(ticketId)
@@ -91,6 +111,8 @@ public class ApprenantServiceImpl implements ApprenantService {
         ticket.setStatut(statut);
         return ticketRepository.save(ticket);
     }
+=======
+>>>>>>> 4d9f6a42d7ebcc4cc0950563327e09ed3aab5bb5
 
     @Override
     public void deleteTicket(Long id) {
