@@ -26,24 +26,15 @@ public class SpringSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/api/admin/createadmin").permitAll()
-                        .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/apprenants/createticket").permitAll()
+                        .requestMatchers("/api/apprenants/createticket").hasRole("APPRENANT")
                         .requestMatchers("/api/formateurs/**").hasRole("FORMATEUR")
-                        //.requestMatchers("/api/apprenants/**").hasRole("APPRENANT")
                         .requestMatchers("/api/reponse/**").hasRole("FORMATEUR")
                         .requestMatchers("/api/reponse/all").hasRole("APPRENANT")
                         .requestMatchers("/api/formateurs/basedeconnaissances").hasRole("APPRENANT")
-
                         .anyRequest().authenticated()
                 )
                 .httpBasic(withDefaults());
-               /* .formLogin(formLogin -> formLogin
-                        .permitAll()
-                )
-                .logout(logout -> logout
-                        .permitAll()
-                );*/
 
         return http.build();
     }

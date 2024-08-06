@@ -1,5 +1,6 @@
 package com.gestion.gestion.Service;
 
+import com.gestion.gestion.Enum.Statut;
 import com.gestion.gestion.Repository.*;
 import com.gestion.gestion.model.*;
 import lombok.RequiredArgsConstructor;
@@ -9,13 +10,18 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static com.gestion.gestion.Enum.Statut.RESOLU;
 
 @Transactional
 @Service
 @RequiredArgsConstructor
 public class TraitementServiceImpl implements TraitementService {
+
+    private final TicketRepository ticketRepository;
 
     private final TraitementRepository traitementRepository;
 
@@ -33,33 +39,67 @@ public class TraitementServiceImpl implements TraitementService {
     @Autowired
     private NotificationRepository notificationRepository;
 
-    @Override
+    @Autowired
+    private MessagerieService messagerieService;
+
     public Traitement createTraitement(Traitement traitement) {
+        // Récupérer l'email du formateur à partir de l'authentification
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String emailformateur = authentication.getName();
-        Formateur fromateur = (Formateur) utilisateurRepository.findByEmail(emailformateur);
+        String emailFormateur = authentication.getName();
+        Formateur formateur = (Formateur) utilisateurRepository.findByEmail(emailFormateur);
 
-        traitement.setFormateur(fromateur);
-        traitementRepository.save(traitement);
+        if (formateur == null) {
+            throw new IllegalArgumentException("Le formateur associé à cet email n'existe pas.");
+        }
 
-        Ticket ticket = traitement.getTicket();
-<<<<<<< HEAD
+        // Associer le formateur au traitement et enregistrer le traitement
+        traitement.setFormateur(formateur);
 
-=======
->>>>>>> 4d9f6a42d7ebcc4cc0950563327e09ed3aab5bb5
+        Ticket ticket = ticketRepository.findById(traitement.getTicket().getId()).get();
+        // Récupérer le ticket associé au traitement
+        Long tiid = ticket.getId();
+        if (tiid == null) {
+            throw new IllegalArgumentException("Le ticket associé au traitement est null.");
+        }
+
+        // Changer le statut du ticket et mettre à jour la date de réponse du traitement
+        ticket.setStatut(Statut.RESOLU);
+        traitement.setResponseDate(LocalDate.now());
+        ticketRepository.save(ticket);
+
+        traitement.setTicket(ticket);
+
+        // Récupérer l'apprenant associé au ticket
         Apprenant apprenant = ticket.getApprenant();
+        Long appid = apprenant.getId();
+        if (appid == null) {
+            throw new RuntimeException("L'apprenant associé au ticket est null.");
+        }
+
+        // Vérification de l'email de l'apprenant
         String email = apprenant.getEmail();
-        String Object ="huuuuuuuuuuuuuuuuuu";
-        String Texte = "ffffffffffffff";
-        apprenantServiceImpl.envoiesMessage(email,Object,Texte);
+        if (email == null || email.isEmpty()) {
+            throw new RuntimeException("L'email de l'apprenant est null ou vide.");
+        }
+
+        // Envoyer un email à l'apprenant
+        String objet = "Résolution du ticket";
+        String texte = "Votre ticket a été répondu";
+        messagerieService.envoyerMessage(email, objet, texte);
+
+        // Créer et enregistrer une notification
         Notification notification = new Notification();
         notification.setMessage(ticket.getDescription());
         notification.setDate(LocalDateTime.now());
         notification.setTicketId(ticket.getId());
         notificationRepository.save(notification);
 
+        traitementRepository.save(traitement);
         return traitement;
     }
+
+
+
 
     @Override
     public Traitement getTraitementById(Long id) {

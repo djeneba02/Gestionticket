@@ -42,7 +42,7 @@ DELIMITER ;**/
 
 
 
-
+/**
 DELIMITER $$
 
 CREATE TRIGGER after_ticket_update
@@ -65,4 +65,4 @@ BEGIN
     VALUES (NEW.id, message, NOW());
 END$$
 
-DELIMITER ;
+DELIMITER ;**/

@@ -51,11 +51,14 @@ public class AdminServiceImpl implements AdminService {
 
     }
 
-    @Override
     public void deleteFormateur(Long id) {
-        formateurRepository.deleteById(id);
-
+        if (formateurRepository.existsById(id)) {
+            formateurRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Formateur not found with id " + id);
+        }
     }
+
 
     @Override
     public List<Formateur> getAllFormateur() {

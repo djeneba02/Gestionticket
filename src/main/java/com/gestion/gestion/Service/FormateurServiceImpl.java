@@ -61,10 +61,7 @@ public class FormateurServiceImpl implements FormateurService {
 
     @Override
     public List<Apprenant> getAllApprenants() {
-<<<<<<< HEAD
 
-=======
->>>>>>> 4d9f6a42d7ebcc4cc0950563327e09ed3aab5bb5
         return apprenantRepository.findAll();
     }
 }

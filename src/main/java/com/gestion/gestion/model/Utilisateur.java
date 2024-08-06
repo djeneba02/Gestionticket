@@ -11,10 +11,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Inheritance(strategy = InheritanceType.JOINED)
-<<<<<<< HEAD
+
 @Table(name = "utilisateur")
-=======
->>>>>>> 4d9f6a42d7ebcc4cc0950563327e09ed3aab5bb5
 public abstract class Utilisateur {
 
     @Id
